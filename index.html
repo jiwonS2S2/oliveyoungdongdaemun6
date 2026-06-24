@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ccefff" />
+  <title>K-Beauty Guide</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin:0; padding:0; width:100%; min-height:100%; overflow:hidden; background:#ccefff; }
+    body { font-family: system-ui, -apple-system, sans-serif; touch-action: manipulation; }
+    .screen { display:none; width:100vw; min-height:100dvh; margin:0; padding:0; background:#ccefff; overflow:hidden; }
+    .screen.active { display:block; }
+    .stage { position:relative; width:100vw; height:auto; margin:0; padding:0; aspect-ratio:709/1536; overflow:hidden; }
+    .detail .stage { aspect-ratio:720/1560; }
+    .stage img { width:100vw; height:auto; display:block; margin:0; padding:0; user-select:none; -webkit-user-drag:none; }
+    a.hot { position:absolute; display:block; cursor:pointer; text-indent:-9999px; overflow:hidden; border-radius:18px; }
+    /* start pages: original 709x1536 coordinates */
+    .click-main { left:10%; top:82.8%; width:80%; height:9.5%; }
+    .lang-zh { left:3.5%; top:94.7%; width:30%; height:4.8%; }
+    .lang-en { left:34.5%; top:94.7%; width:30.5%; height:4.8%; }
+    .lang-ja { left:66.5%; top:94.7%; width:30%; height:4.8%; }
+    /* detail pages: original 720x1560 coordinates */
+    .back { left:0.5%; top:96.3%; width:25%; height:3.7%; }
+  </style>
+</head>
+<body>
+  <section id="start-en" class="screen active">
+    <div class="stage">
+      <img src="assets/start-en.jpg" alt="English start page">
+      <a class="hot click-main" href="#detail-en" aria-label="Open English products"></a>
+      <a class="hot lang-zh" href="#start-zh" aria-label="Chinese"></a>
+      <a class="hot lang-en" href="#start-en" aria-label="English"></a>
+      <a class="hot lang-ja" href="#start-ja" aria-label="Japanese"></a>
+    </div>
+  </section>
+
+  <section id="start-ja" class="screen">
+    <div class="stage">
+      <img src="assets/start-ja.jpg" alt="Japanese start page">
+      <a class="hot click-main" href="#detail-ja" aria-label="Open Japanese products"></a>
+      <a class="hot lang-zh" href="#start-zh" aria-label="Chinese"></a>
+      <a class="hot lang-en" href="#start-en" aria-label="English"></a>
+      <a class="hot lang-ja" href="#start-ja" aria-label="Japanese"></a>
+    </div>
+  </section>
+
+  <section id="start-zh" class="screen">
+    <div class="stage">
+      <img src="assets/start-zh.jpg" alt="Chinese start page">
+      <a class="hot click-main" href="#detail-zh" aria-label="Open Chinese products"></a>
+      <a class="hot lang-zh" href="#start-zh" aria-label="Chinese"></a>
+      <a class="hot lang-en" href="#start-en" aria-label="English"></a>
+      <a class="hot lang-ja" href="#start-ja" aria-label="Japanese"></a>
+    </div>
+  </section>
+
+  <section id="detail-en" class="screen detail">
+    <div class="stage">
+      <img src="assets/detail-en.png" alt="English product page">
+      <a class="hot back" href="#start-en" aria-label="Back"></a>
+    </div>
+  </section>
+
+  <section id="detail-ja" class="screen detail">
+    <div class="stage">
+      <img src="assets/detail-ja.png" alt="Japanese product page">
+      <a class="hot back" href="#start-ja" aria-label="Back"></a>
+    </div>
+  </section>
+
+  <section id="detail-zh" class="screen detail">
+    <div class="stage">
+      <img src="assets/detail-zh.png" alt="Chinese product page">
+      <a class="hot back" href="#start-zh" aria-label="Back"></a>
+    </div>
+  </section>
+
+  <script>
+    const screens = [...document.querySelectorAll('.screen')];
+    function show(id) {
+      if (!id || !document.querySelector(id)) id = '#start-en';
+      screens.forEach(s => s.classList.toggle('active', '#' + s.id === id));
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', () => show(location.hash));
+    show(location.hash);
+  </script>
+</body>
+</html>
