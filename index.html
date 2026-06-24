@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#cdeeff" />
+  <title>K-Beauty Guide</title>
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#cdeeff;overscroll-behavior:none;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;position:fixed;inset:0;}
+    #stage{position:fixed;inset:0;width:100vw;height:100dvh;min-height:100svh;overflow:hidden;background:#cdeeff;display:flex;align-items:center;justify-content:center;}
+    #slide{display:block;width:100%;height:100%;object-fit:contain;object-position:center center;user-select:none;-webkit-user-drag:none;}
+    #hotspots{position:fixed;pointer-events:none;}
+    .hotspot{position:absolute;display:block;border:0;background:rgba(0,0,0,0);pointer-events:auto;cursor:pointer;touch-action:manipulation;}
+  </style>
+</head>
+<body>
+  <main id="stage" aria-label="K-Beauty guide">
+    <img id="slide" src="assets/page-1.png" alt="K-Beauty guide slide" draggable="false" />
+    <div id="hotspots"></div>
+  </main>
+<script>
+(() => {
+  const W = 709, H = 1536;
+  const img = document.getElementById('slide');
+  const spots = document.getElementById('hotspots');
+  let page = 1;
+  const pages = {
+    1: 'assets/page-1.png', 2: 'assets/page-2.png', 3: 'assets/page-3.png',
+    4: 'assets/page-4.png', 5: 'assets/page-5.png', 6: 'assets/page-6.png'
+  };
+  const startHotspots = [
+    {x: 20, y: 1425, w: 205, h: 95, to: 3, label:'中文'},
+    {x: 245, y: 1425, w: 215, h: 95, to: 1, label:'English'},
+    {x: 480, y: 1425, w: 210, h: 95, to: 2, label:'日本語'}
+  ];
+  const maps = {
+    1: [{x: 80, y: 1240, w: 550, h: 175, to: 4, label:'Click'}, ...startHotspots],
+    2: [{x: 80, y: 1240, w: 550, h: 175, to: 5, label:'Click'}, ...startHotspots],
+    3: [{x: 80, y: 1240, w: 550, h: 175, to: 6, label:'Click'}, ...startHotspots],
+    4: [{x: 0, y: 1440, w: 205, h: 95, to: 1, label:'Back'}],
+    5: [{x: 0, y: 1440, w: 205, h: 95, to: 2, label:'Back'}],
+    6: [{x: 0, y: 1440, w: 205, h: 95, to: 3, label:'Back'}]
+  };
+  function imageBox(){
+    const sw = window.innerWidth;
+    const sh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const scale = Math.min(sw / W, sh / H);
+    const ww = W * scale;
+    const hh = H * scale;
+    const left = (sw - ww) / 2 + (window.visualViewport ? window.visualViewport.offsetLeft : 0);
+    const top = (sh - hh) / 2 + (window.visualViewport ? window.visualViewport.offsetTop : 0);
+    return {left, top, ww, hh, scale};
+  }
+  function renderHotspots(){
+    const b = imageBox();
+    spots.style.left = b.left + 'px';
+    spots.style.top = b.top + 'px';
+    spots.style.width = b.ww + 'px';
+    spots.style.height = b.hh + 'px';
+    spots.innerHTML = '';
+    (maps[page] || []).forEach(h => {
+      const a = document.createElement('button');
+      a.className = 'hotspot';
+      a.setAttribute('aria-label', h.label);
+      a.style.left = (h.x / W * 100) + '%';
+      a.style.top = (h.y / H * 100) + '%';
+      a.style.width = (h.w / W * 100) + '%';
+      a.style.height = (h.h / H * 100) + '%';
+      a.addEventListener('click', () => go(h.to));
+      spots.appendChild(a);
+    });
+  }
+  function go(n){
+    if(!pages[n]) return;
+    page = n;
+    img.src = pages[n] + '?v=final2';
+    renderHotspots();
+  }
+  window.addEventListener('resize', renderHotspots);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', renderHotspots);
+    window.visualViewport.addEventListener('scroll', renderHotspots);
+  }
+  img.addEventListener('load', renderHotspots);
+  renderHotspots();
+})();
+</script>
+</body>
+</html>
