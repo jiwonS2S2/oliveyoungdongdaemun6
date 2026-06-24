@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ccefff" />
+  <title>K-Beauty Guide</title>
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;width:100%;background:#ccefff;font-family:system-ui,-apple-system,sans-serif;overscroll-behavior:none}
+    body{touch-action:manipulation;overflow-x:hidden}
+    .screen{display:none;width:100vw;background:#ccefff;margin:0;padding:0;overflow:hidden}
+    .screen.active{display:block}
+    .stage{position:relative;width:100vw;margin:0;padding:0;background:#ccefff;overflow:hidden}
+    .detail .stage{overflow:visible}
+    .layer{position:absolute;left:0;width:100vw;margin:0;padding:0}
+    .detail .layer{top:0!important}
+    .layer img{width:100vw;height:auto;display:block;margin:0;padding:0;user-select:none;-webkit-user-drag:none}
+    a.hot{position:absolute;display:block;cursor:pointer;text-indent:-9999px;overflow:hidden;border-radius:18px}
+    .click-main{left:10%;top:82.8%;width:80%;height:9.5%}
+    .lang-zh{left:3.5%;top:94.7%;width:30%;height:4.8%}
+    .lang-en{left:34.5%;top:94.7%;width:30.5%;height:4.8%}
+    .lang-ja{left:66.5%;top:94.7%;width:30%;height:4.8%}
+    .back{left:0.5%;top:96.3%;width:25%;height:3.7%}
+  </style>
+</head>
+<body>
+  <section id="start-en" class="screen active" data-kind="start" data-ratio="1536/709">
+    <div class="stage"><div class="layer"><img src="assets/start-en.jpg" alt="English start page"><a class="hot click-main" href="#detail-en">open</a><a class="hot lang-zh" href="#start-zh">zh</a><a class="hot lang-en" href="#start-en">en</a><a class="hot lang-ja" href="#start-ja">ja</a></div></div>
+  </section>
+  <section id="start-ja" class="screen" data-kind="start" data-ratio="1536/709">
+    <div class="stage"><div class="layer"><img src="assets/start-ja.jpg" alt="Japanese start page"><a class="hot click-main" href="#detail-ja">open</a><a class="hot lang-zh" href="#start-zh">zh</a><a class="hot lang-en" href="#start-en">en</a><a class="hot lang-ja" href="#start-ja">ja</a></div></div>
+  </section>
+  <section id="start-zh" class="screen" data-kind="start" data-ratio="1536/709">
+    <div class="stage"><div class="layer"><img src="assets/start-zh.jpg" alt="Chinese start page"><a class="hot click-main" href="#detail-zh">open</a><a class="hot lang-zh" href="#start-zh">zh</a><a class="hot lang-en" href="#start-en">en</a><a class="hot lang-ja" href="#start-ja">ja</a></div></div>
+  </section>
+  <section id="detail-en" class="screen detail" data-kind="detail" data-ratio="1560/720">
+    <div class="stage"><div class="layer"><img src="assets/detail-en.png" alt="English product page"><a class="hot back" href="#start-en">back</a></div></div>
+  </section>
+  <section id="detail-ja" class="screen detail" data-kind="detail" data-ratio="1560/720">
+    <div class="stage"><div class="layer"><img src="assets/detail-ja.png" alt="Japanese product page"><a class="hot back" href="#start-ja">back</a></div></div>
+  </section>
+  <section id="detail-zh" class="screen detail" data-kind="detail" data-ratio="1560/720">
+    <div class="stage"><div class="layer"><img src="assets/detail-zh.png" alt="Chinese product page"><a class="hot back" href="#start-zh">back</a></div></div>
+  </section>
+  <script>
+    const screens=[...document.querySelectorAll('.screen')];
+    function visualH(){return window.visualViewport ? window.visualViewport.height : window.innerHeight;}
+    function layout(){
+      const vw=window.innerWidth;
+      const vh=visualH();
+      document.querySelectorAll('.screen').forEach(s=>{
+        const ratio=eval(s.dataset.ratio); // imageHeight / imageWidth
+        const imgH=vw*ratio;
+        const stage=s.querySelector('.stage');
+        const layer=s.querySelector('.layer');
+        layer.style.height=imgH+'px';
+        if(s.dataset.kind==='start'){
+          stage.style.height=vh+'px';
+          // Bottom-align the full-width image inside the actually visible Safari area.
+          // This keeps the language buttons above the bottom address bar while keeping side margins at 0.
+          layer.style.top=Math.min(0, vh-imgH)+'px';
+          document.body.style.overflowY='hidden';
+        }else{
+          const bottomPad=120;
+          stage.style.height=(imgH+bottomPad)+'px';
+          layer.style.top='0px';
+        }
+      });
+    }
+    function show(id){
+      if(!id || !document.querySelector(id)) id='#start-en';
+      screens.forEach(s=>s.classList.toggle('active','#'+s.id===id));
+      layout();
+      window.scrollTo(0,0);
+      const active=document.querySelector('.screen.active');
+      document.body.style.overflowY=active?.dataset.kind==='detail'?'auto':'hidden';
+    }
+    window.addEventListener('hashchange',()=>show(location.hash));
+    window.addEventListener('resize',()=>{layout();});
+    if(window.visualViewport){window.visualViewport.addEventListener('resize',layout);window.visualViewport.addEventListener('scroll',layout);}
+    window.addEventListener('load',()=>show(location.hash));
+    show(location.hash);
+  </script>
+</body>
+</html>
