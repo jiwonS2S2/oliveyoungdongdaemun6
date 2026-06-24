@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<title>K-Beauty Guide</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{
+    margin:0;padding:0;width:100%;height:100%;
+    overflow:hidden;background:#cceefa;touch-action:manipulation;
+    overscroll-behavior:none;
+  }
+  body{position:fixed;inset:0;font-family:system-ui,sans-serif;}
+  .page{position:fixed;inset:0;display:none;background:#cceefa;overflow:hidden;}
+  .page.active{display:block;}
+
+  /* 검증 기준: 이미지/폰트/그림자는 그대로 두고, 화면 안쪽에 아주 얇은 상하 여유만 남김 */
+  .frame{
+    position:fixed;
+    left:0;
+    top:var(--pad, 6px);
+    width:100vw;
+    height:calc(var(--vh, 100dvh) - (var(--pad, 6px) * 2));
+    overflow:hidden;
+    background:#cceefa;
+  }
+  .slide-img{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    display:block;
+    object-fit:fill;              /* 좌우 꽉 채우고, 상하도 보이는 영역 안에 넣음 */
+    object-position:center center;
+    user-select:none;-webkit-user-drag:none;
+  }
+  .hot{position:absolute;display:block;background:rgba(255,255,255,0);border:0;cursor:pointer;z-index:5;padding:0;margin:0;}
+
+  /* Start pages: 이미지 안 실제 버튼 영역 위 투명 버튼 */
+  .main-click{left:9%;top:78.5%;width:82%;height:11%;}
+  .lang-zh{left:2%;top:90.5%;width:32%;height:9.5%;}
+  .lang-en{left:34%;top:90.5%;width:32%;height:9.5%;}
+  .lang-ja{left:66%;top:90.5%;width:32%;height:9.5%;}
+
+  /* Product pages: Back 버튼이 절대 잘리지 않게 버튼 박스를 살짝 크게 */
+  .back{left:0;top:93.7%;width:31%;height:6.3%;}
+</style>
+</head>
+<body>
+  <section class="page active" id="p1"><div class="frame"><img class="slide-img" src="assets/page1.jpg?v=verified" alt="English start"><button class="hot main-click" onclick="go(4)" aria-label="open English"></button><button class="hot lang-zh" onclick="go(3)" aria-label="Chinese"></button><button class="hot lang-en" onclick="go(1)" aria-label="English"></button><button class="hot lang-ja" onclick="go(2)" aria-label="Japanese"></button></div></section>
+  <section class="page" id="p2"><div class="frame"><img class="slide-img" src="assets/page2.jpg?v=verified" alt="Japanese start"><button class="hot main-click" onclick="go(5)" aria-label="open Japanese"></button><button class="hot lang-zh" onclick="go(3)" aria-label="Chinese"></button><button class="hot lang-en" onclick="go(1)" aria-label="English"></button><button class="hot lang-ja" onclick="go(2)" aria-label="Japanese"></button></div></section>
+  <section class="page" id="p3"><div class="frame"><img class="slide-img" src="assets/page3.jpg?v=verified" alt="Chinese start"><button class="hot main-click" onclick="go(6)" aria-label="open Chinese"></button><button class="hot lang-zh" onclick="go(3)" aria-label="Chinese"></button><button class="hot lang-en" onclick="go(1)" aria-label="English"></button><button class="hot lang-ja" onclick="go(2)" aria-label="Japanese"></button></div></section>
+  <section class="page" id="p4"><div class="frame"><img class="slide-img" src="assets/page4.png?v=verified" alt="English products"><button class="hot back" onclick="go(1)" aria-label="back"></button></div></section>
+  <section class="page" id="p5"><div class="frame"><img class="slide-img" src="assets/page5.png?v=verified" alt="Japanese products"><button class="hot back" onclick="go(2)" aria-label="back"></button></div></section>
+  <section class="page" id="p6"><div class="frame"><img class="slide-img" src="assets/page6.png?v=verified" alt="Chinese products"><button class="hot back" onclick="go(3)" aria-label="back"></button></div></section>
+<script>
+function fit(){
+  const h = (window.visualViewport && window.visualViewport.height) ? window.visualViewport.height : window.innerHeight;
+  document.documentElement.style.setProperty('--vh', Math.round(h) + 'px');
+  document.documentElement.style.setProperty('--pad', '6px');
+}
+function go(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  fit();
+}
+fit();
+window.addEventListener('resize', fit);
+window.addEventListener('orientationchange', ()=>setTimeout(fit,250));
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', fit);
+  window.visualViewport.addEventListener('scroll', fit);
+}
+</script>
+</body>
+</html>
