@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#ccefff" />
+<title>K-Beauty Guide</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;padding:0;width:100%;height:100%;background:#ccefff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;overscroll-behavior:none}.screen{display:none;width:100vw;height:100dvh;background:#ccefff;overflow:hidden}.screen.active{display:block}.stage{position:relative;width:100vw;height:100dvh;background:#ccefff;overflow:hidden}.layer{position:absolute;left:50%;top:0;transform:translateX(-50%);width:100vw;height:auto}.layer img{width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none}a.hot{position:absolute;display:block;text-indent:-9999px;overflow:hidden;border-radius:18px}.click-main{left:10%;top:82.8%;width:80%;height:9.5%}.lang-zh{left:3.5%;top:94.7%;width:30%;height:4.8%}.lang-en{left:34.5%;top:94.7%;width:30.5%;height:4.8%}.lang-ja{left:66.5%;top:94.7%;width:30%;height:4.8%}.back{left:0.5%;top:96.3%;width:25%;height:3.7%}
+/* 홈화면 추가(PWA)에서는 원본 비율 그대로 꽉 차게 */
+@media (display-mode: standalone){.layer{width:100vw!important;top:0!important;left:0!important;transform:none!important}.stage,.screen{height:100vh!important}}
+</style>
+</head>
+<body>
+<section id="start-en" class="screen active" data-kind="start" data-img="709,1536"><div class="stage"><div class="layer"><img src="assets/start-en.jpg"><a class="hot click-main" href="#detail-en">open</a><a class="hot lang-zh" href="#start-zh">zh</a><a class="hot lang-en" href="#start-en">en</a><a class="hot lang-ja" href="#start-ja">ja</a></div></div></section>
+<section id="start-ja" class="screen" data-kind="start" data-img="709,1536"><div class="stage"><div class="layer"><img src="assets/start-ja.jpg"><a class="hot click-main" href="#detail-ja">open</a><a class="hot lang-zh" href="#start-zh">zh</a><a class="hot lang-en" href="#start-en">en</a><a class="hot lang-ja" href="#start-ja">ja</a></div></div></section>
+<section id="start-zh" class="screen" data-kind="start" data-img="709,1536"><div class="stage"><div class="layer"><img src="assets/start-zh.jpg"><a class="hot click-main" href="#detail-zh">open</a><a class="hot lang-zh" href="#start-zh">zh</a><a class="hot lang-en" href="#start-en">en</a><a class="hot lang-ja" href="#start-ja">ja</a></div></div></section>
+<section id="detail-en" class="screen detail" data-kind="detail" data-img="720,1560"><div class="stage"><div class="layer"><img src="assets/detail-en.png"><a class="hot back" href="#start-en">back</a></div></div></section>
+<section id="detail-ja" class="screen detail" data-kind="detail" data-img="720,1560"><div class="stage"><div class="layer"><img src="assets/detail-ja.png"><a class="hot back" href="#start-ja">back</a></div></div></section>
+<section id="detail-zh" class="screen detail" data-kind="detail" data-img="720,1560"><div class="stage"><div class="layer"><img src="assets/detail-zh.png"><a class="hot back" href="#start-zh">back</a></div></div></section>
+<script>
+const screens=[...document.querySelectorAll('.screen')];
+function isStandalone(){return window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;}
+function vh(){return window.visualViewport ? window.visualViewport.height : window.innerHeight;}
+function layout(){
+  const vw=window.innerWidth;
+  // Safari 하단 주소창에 가리지 않게 실제 보이는 영역에서 여유를 뺌
+  const reserve=isStandalone()?0:96;
+  const usableH=Math.max(420, vh()-reserve);
+  document.querySelectorAll('.screen').forEach(s=>{
+    const [iw,ih]=s.dataset.img.split(',').map(Number);
+    const ratio=ih/iw;
+    const stage=s.querySelector('.stage'), layer=s.querySelector('.layer');
+    stage.style.height=vh()+'px'; s.style.height=vh()+'px';
+    if(isStandalone()){
+      layer.style.width=vw+'px'; layer.style.left='0px'; layer.style.transform='none'; layer.style.top='0px'; return;
+    }
+    if(s.dataset.kind==='detail'){
+      // 제품 페이지는 Back 버튼이 반드시 보이게 전체 이미지를 보이는 영역 안에 맞춤
+      let w=Math.min(vw, usableH/ratio);
+      layer.style.width=w+'px'; layer.style.left='50%'; layer.style.transform='translateX(-50%)'; layer.style.top='0px';
+    }else{
+      // 시작 페이지도 언어 버튼이 보이게 아래 기준으로 맞춤. 너무 작아지지 않게 폭 우선 유지.
+      let w=Math.min(vw, (usableH+28)/ratio);
+      layer.style.width=w+'px'; layer.style.left='50%'; layer.style.transform='translateX(-50%)'; layer.style.top='0px';
+    }
+  });
+}
+function show(id){ if(!id||!document.querySelector(id)) id='#start-en'; screens.forEach(s=>s.classList.toggle('active','#'+s.id===id)); layout(); window.scrollTo(0,0); }
+window.addEventListener('hashchange',()=>show(location.hash));
+window.addEventListener('resize',layout); if(window.visualViewport){visualViewport.addEventListener('resize',layout); visualViewport.addEventListener('scroll',layout);} window.addEventListener('load',()=>show(location.hash)); show(location.hash);
+</script>
+</body></html>

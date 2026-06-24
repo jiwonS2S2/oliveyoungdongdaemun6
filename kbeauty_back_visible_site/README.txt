@@ -1,0 +1,1 @@
+GitHub Pages 업로드: assets 폴더, index.html, README.txt를 저장소 루트에 올리세요. Safari 하단 주소창 대응 버전입니다.
